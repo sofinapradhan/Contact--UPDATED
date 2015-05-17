@@ -1,11 +1,12 @@
 <?php
-   
-   include("db.php");
-   //include("header.php");
-   
-   $agentid =$_GET['id'];
-   
-   
+
+/* Written by Sofina Pradhan
+ * Date: 2015/05/17
+ * Usage: show the contact information for all Agencies, as well as all agents under each agencies.
+ */
+ 
+   include("db.php");        
+   $agentid =$_GET['id'];    //getting agentid from contact page to show the list of agents for the particular Agency
    $query = "select * from Agencies where Agencyid = $agentid ";
    $result = mysqli_query($con, $query) or die (" SQL query error");
    while ($row = mysqli_fetch_assoc($result))
@@ -20,80 +21,50 @@
 		$mainaddress .= "Fax No: .$row[AgncyFax] <br /></h></p>";
 		print($mainaddress);
    }
-   
+?>   
 	
-   $sql = "select AgtFirstName,AgtMiddleInitial,AgtLastName,AgtBusPhone,AgtEmail,AgtPosition from agents where Agencyid = $agentid ";
-   $result = mysqli_query($con, $sql) or die("SQL Error");
-   $rowcount = mysqli_num_rows($result);
-   if ($rowcount > 0 )
-   { 
-       $datatable = "<table border='1' cellpadding='5 cellspacing='0'>";
-	   $datatable .= "<thead>
-	                     <tr>
-						    <th class='tableheader'>First Name</th>
-							<th class='tableheader'>Middle Name</th>
-							<th class='tableheader'>Last Name</th>
-							<th class='tableheader'>Business Phone Number</th>
-							<th class='tableheader'>Email Address</th>
-							<th class='tableheader'>Position</th>
-						 </tr>
-					   </thead>";	 
-	   
-	   while($row = mysqli_fetch_row($result))
-	   {
-		  $datatable .= "<tr>";
-		  foreach ($row as $col)
-		  {
-			 $datatable .= "<td>$col</td>";
-		  }
-		  $datatable .= "</tr>";
-	   }
-	   $datatable .= "</table>";
-	}  
-   mysqli_close($con);
-?>
-
-
-
-	  
 <!DOCTYPE html>
 
-<style>
-	.tableheader
-      { 
-	   color: #220CED;
-	   background-color:#d6ba65
-	  }
-     
-	 h4
-	 {
-	   color: #220CED;
-	 
-	 }
-</style>
 
 <html>
-	
-    
 	<head>
 		<title>Agents Information</title>
-		<!-- <link href="global.css" type="text/css" rel="stylesheet">  -->
+		<link href="contact.css" type="text/css" rel="stylesheet">   
 	</head>
-
-	<body bgcolor=#F7BB86> 
-	
-	<?php
-	   if ($rowcount > 0 )
-       {
-	     
-		  print($datatable);
-       }
-      else
-       {
-         print ("No record found!");
-       }
-    ?>
-	
-</body>
+	<body bgcolor=#FACFAA> 
+			
+					<?php           // show the list of agents filter by Agencyid
+					    $sql = "select AgtFirstName,AgtMiddleInitial,AgtLastName,AgtBusPhone,AgtEmail,AgtPosition from agents where Agencyid = $agentid order by AgtFirstName";
+						$result = mysqli_query($con, $sql) or die("SQL Error");
+                           
+					?>
+					
+					<table border="1" cellpadding="5" cellspacing="0">
+					   <thead>
+	                     <tr>
+						    <th class="tableheader">First Name</th>
+							<th class="tableheader">Middle Name</th>
+							<th class="tableheader">Last Name</th>
+							<th class="tableheader">Business Phone Number</th>
+							<th class="tableheader">Email Address</th>
+							<th class="tableheader">Position</th>
+						 </tr>
+					   </thead>	 
+	   
+						<tbody>
+						    <?php   while($row = mysqli_fetch_assoc($result))  { ?>
+						    <tr>
+							    <td><?php echo $row["AgtFirstName"]; ?></td>
+							    <td><?php echo $row["AgtMiddleInitial"]; ?></td>
+							    <td><?php echo $row["AgtLastName"]; ?></td>
+							    <td><?php echo $row["AgtBusPhone"]; ?></td>
+							    <td><?php echo $row["AgtEmail"]; ?></td>
+							    <td><?php echo $row["AgtPosition"]; ?></td>
+						    </tr>
+							<?php } ?>  
+							<?php  mysqli_close($con); ?>
+			            </tbody>
+			        </table>
+	</body>
 	
 </html> 
